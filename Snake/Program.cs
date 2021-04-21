@@ -13,13 +13,15 @@ namespace Snake
         {
             Console.SetBufferSize(120, 30);
 
+            if (Console.CursorVisible == true)
+            {
+                Console.CursorVisible = false;
+            }
+
             // Отрисовка рамочки
             HorizontalLine hTopLine = new HorizontalLine(0, 110, 0, '*');
-
             HorizontalLine hBottomLine = new HorizontalLine(0, 110, 28, '*');
-
             VerticalLine vLeftLine = new VerticalLine(0, 28, 0, '*');
-
             VerticalLine vRightLine = new VerticalLine(0, 28, 110, '*');
 
             hTopLine.Draw();
@@ -33,9 +35,24 @@ namespace Snake
             Snake snake = new Snake(p, 4, Direction.RIGHT);
 
             snake.Draw();
-           
-            while(true)
+
+            FoodCreator foodCreator = new FoodCreator(110, 28, '$');
+            Point food = foodCreator.CreateFood();
+            food.Draw();
+
+            while (true)
             {
+                if (snake.Eat(food))
+                {
+                    food = foodCreator.CreateFood();
+                    food.Draw();
+                }
+                else
+                {
+                    snake.Move();
+                }
+
+                Thread.Sleep(100);
 
                 if (Console.KeyAvailable)
                 { 
@@ -43,12 +60,7 @@ namespace Snake
 
                     snake.HandleKey(key.Key);
                 }
-
-                Thread.Sleep(100);
-                snake.Move();
             }
-
-            //Console.ReadLine();
         }
     }
 }
